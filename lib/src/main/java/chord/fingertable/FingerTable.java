@@ -4,16 +4,21 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 
 import chord.node.RemoteChordNode;
+import chord.util.Util;
 
 public class FingerTable<K extends Serializable, V extends Serializable, T extends RemoteChordNode<K, V, T>> {
 
+  private final int id;
+
   private final Object[] fingerTable;
 
-  public FingerTable(int degree) {
+  public FingerTable(int degree, int id) {
+    this.id = id;
     this.fingerTable = new Object[degree + 1];
   }
 
-  public FingerTable(int degree, Object[] fingerTable) {
+  public FingerTable(int degree, int id, Object[] fingerTable) {
+    this.id = id;
     if (fingerTable.length != degree + 1) {
       throw new IllegalArgumentException("Finger table should be one greater than the degree.");
     }
@@ -43,7 +48,9 @@ public class FingerTable<K extends Serializable, V extends Serializable, T exten
         s.append("null");
       } else {
         try {
-          s.append(((T) fingerTable[i]).getId());
+          s.append(
+              String.format("%d successor: %d", (id + Util.powerOf2(i - 1)) % Util.powerOf2((fingerTable.length - 1)),
+                  ((T) fingerTable[i]).getId()));
         } catch (RemoteException e) {
           return "error occurred in toString()";
         }

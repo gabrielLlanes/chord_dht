@@ -47,7 +47,7 @@ public abstract class AbstractChordNode<K extends Serializable, V extends Serial
     this.degree = degree;
     this.base = Util.powerOf2(degree);
     this.id = id;
-    this.fingerTable = new FingerTable<>(degree);
+    this.fingerTable = new FingerTable<>(degree, id);
     this.modulo = new Modulo(Util.powerOf2(degree));
   }
 
@@ -55,7 +55,7 @@ public abstract class AbstractChordNode<K extends Serializable, V extends Serial
     this.degree = degree;
     this.base = Util.powerOf2(degree);
     this.id = id;
-    this.fingerTable = new FingerTable<>(degree, new Object[degree + 1]);
+    this.fingerTable = new FingerTable<>(degree, id, new Object[degree + 1]);
     for (int i = 0; i <= degree; i++) {
       fingerTable.set(i, self());
     }
