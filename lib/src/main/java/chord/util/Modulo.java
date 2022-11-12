@@ -13,7 +13,7 @@ public class Modulo {
   // a <= n < b mod base
   public boolean inLeftHalfClosed(int n, int a, int b) {
     if (a == b)
-      return n == a;
+      return false;
     else if (a < b) {
       return n >= a && n < b;
     } else {
@@ -24,7 +24,7 @@ public class Modulo {
   // a < n <= b mod base
   public boolean inRightHalfClosed(int n, int a, int b) {
     if (a == b)
-      return n == a;
+      return false;
     else if (a < b) {
       return n > a && n <= b;
     } else {
@@ -35,7 +35,7 @@ public class Modulo {
   // a < n < b mod base
   public boolean inOpen(int n, int a, int b) {
     if (a == b)
-      return n == a;
+      return false;
     else if (a < b) {
       return n > a && n < b;
     } else {
