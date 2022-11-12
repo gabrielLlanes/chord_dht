@@ -1,6 +1,7 @@
 package chord.node.consistentfinger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.rmi.RemoteException;
 import java.util.Random;
@@ -71,6 +72,14 @@ public class ConsistentFingerTest {
     c11.put("whyhellothere", "ohidontthinkso");
     assertEquals(c28.lookup("whyhellothere"), "ohidontthinkso");
 
+    c4.remove("key1");
+    c28.remove("asdfasdfasdf");
+    c14.remove("whyhellothere");
+
+    assertNull(c11.lookup("key1"));
+    assertNull(c4.lookup("asdfasdfasdf"));
+    assertNull(c18.lookup("whyhellothere"));
+
     Object[] nodes = new Object[] { c1, c4, c9, c11, c14, c18, c20, c21, c28 };
     Random rg = new Random();
     for (int i = 0; i < 10_000; i++) {
@@ -78,13 +87,16 @@ public class ConsistentFingerTest {
       String val = RandomString.getRandomASCIIString(50 + rg.nextInt(50));
       int putNode = rg.nextInt(nodes.length);
       int lookupNode = rg.nextInt(nodes.length);
-      System.out.print(String.format("Key %d: %s", i, key));
-      System.out.print(String.format("Val %d: %s", i, val));
-      System.out.println();
-      System.out.print(String.format("Putting on node %d, looking up on node %d", putNode, lookupNode));
+      /*
+       * System.out.print(String.format("Key %d: %s", i, key));
+       * System.out.print(String.format("Val %d: %s", i, val));
+       * System.out.println();
+       * System.out.print(String.format("Putting on node %d, looking up on node %d",
+       * putNode, lookupNode));
+       */
       ((ConsistentFingerRemoteChordNode<String, String>) nodes[putNode]).put(key, val);
       assertEquals(((ConsistentFingerRemoteChordNode<String, String>) nodes[lookupNode]).lookup(key), val);
-      Thread.sleep(1);
+      // Thread.sleep(0, 1);
     }
   }
 }

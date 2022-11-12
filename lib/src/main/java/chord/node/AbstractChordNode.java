@@ -189,6 +189,28 @@ public abstract class AbstractChordNode<K extends Serializable, V extends Serial
   }
 
   @Override
+  public V remove(K key) throws RemoteException {
+    int keyHashCode = modulo.hashCode(key);
+    T keySuccessor = findSuccessor(keyHashCode);
+    return keySuccessor.localRemove(key);
+  }
+
+  @Override
+  public V localRemove(K key) throws RemoteException {
+    LinkedList<Entry<K, V>> managedList = managed.get(modulo.hashCode(key));
+    if (managedList != null) {
+      for (Entry<K, V> entry : managedList) {
+        if (entry.getKey().equals(key)) {
+          V val = entry.getValue();
+          managedList.remove(entry);
+          return val;
+        }
+      }
+    }
+    return null;
+  }
+
+  @Override
   public String toString() {
     return String.format("{chord %s: %s}", getId(), fingerTable);
   }

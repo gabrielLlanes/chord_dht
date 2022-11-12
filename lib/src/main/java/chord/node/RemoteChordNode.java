@@ -71,24 +71,32 @@ public interface RemoteChordNode<K extends Serializable, V extends Serializable,
   public T findPredecessor(int n) throws RemoteException;
 
   /**
-   * asks this node to put a key-value pair in the proper place within the
-   * network.
+   * asks this node to put a key-value pair in the chord
    */
   public void put(K key, V val) throws RemoteException;
 
   /**
-   * usual put operation for a hash table
+   * put operation that should only be called on the successor of the key.
    */
   public void localPut(K key, V val) throws RemoteException;
 
   /**
-   * usual lookup interface for a hash table
+   * asks this node to lookup a key in the chord
    */
   public V lookup(K key) throws RemoteException;
 
   /**
-   * lookup operation when it is known that this node is the successor of the key.
+   * lookup operation that should only be called on the successor of the key.
    */
   public V localLookup(K key) throws RemoteException;
 
+  /**
+   * asks this node to remove the key and its associated value from the chord
+   */
+  public V remove(K key) throws RemoteException;
+
+  /**
+   * remove operation that should only be called on the successor of the key.
+   */
+  public V localRemove(K key) throws RemoteException;
 }
