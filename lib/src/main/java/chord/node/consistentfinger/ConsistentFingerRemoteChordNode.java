@@ -5,6 +5,10 @@ import java.rmi.RemoteException;
 
 import chord.node.RemoteChordNode;
 
+/**
+ * Interface of node for a chord in which finger tables are aggressively
+ * maintained.
+ */
 public interface ConsistentFingerRemoteChordNode<K extends Serializable, V extends Serializable>
     extends RemoteChordNode<K, V, ConsistentFingerRemoteChordNode<K, V>> {
 

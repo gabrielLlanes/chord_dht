@@ -3,6 +3,9 @@ package chord.node.consistentfinger;
 import java.nio.file.Path;
 import java.util.Random;
 
+/*
+ * Class for generating random strings.
+ */
 public class RandomString {
   static Random rg = new Random();
   static int l_lower = 'a';

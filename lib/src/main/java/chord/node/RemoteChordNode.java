@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 /**
  * Node in a chord network. Remote interface to be exposed.
  * 
- * @param the extending interface
+ * @param <T> the extending interface
  * @see <a href="https://dl.acm.org/doi/pdf/10.1145/383059.383071">Chord: A
  *      Scalable Peer-to-peer Lookup Service for Internet Applications</a>
  */

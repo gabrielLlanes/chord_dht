@@ -34,7 +34,7 @@ public class ConsistentFingerChordNodeImpl<K extends Serializable, V extends Ser
      * table entry i)
      */
     for (int i = 2; i <= degree; i++) {
-      int currFingerStart = (id + Util.powerOf2(i - 1)) % base;
+      int currFingerStart = (id + Util.powerOf2(i - 1)) % modulus;
       ConsistentFingerRemoteChordNode<K, V> prevFinger = fingerTable.get(i - 1);
       int prevFingerId = prevFinger.getId();
       if (modulo.inOpen(currFingerStart, id, prevFingerId) || (id == prevFingerId)) {

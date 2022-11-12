@@ -12,7 +12,7 @@ import chord.fingertable.FingerTable;
 import chord.util.Modulo;
 import chord.util.Util;
 
-/*
+/**
  * Base class for universal chord operations and members
  */
 public abstract class AbstractChordNode<K extends Serializable, V extends Serializable, T extends RemoteChordNode<K, V, T>>
@@ -25,10 +25,10 @@ public abstract class AbstractChordNode<K extends Serializable, V extends Serial
   protected final int degree;
 
   /*
-   * the base value for which this chord network is based on, and which all
+   * the modulus value for which this chord network is based on, and which all
    * modular arithmetic by modulo done relative to
    */
-  protected final int base;
+  protected final int modulus;
 
   /* the finger table of this node */
   transient protected FingerTable<K, V, T> fingerTable;
@@ -39,27 +39,29 @@ public abstract class AbstractChordNode<K extends Serializable, V extends Serial
   transient protected final ConcurrentMap<Integer, LinkedList<Entry<K, V>>> managed = new ConcurrentHashMap<>();
 
   /**
-   * utility for arithmetic modulo the base of this object
+   * utility for arithmetic modulo the modulus
    */
   transient protected final Modulo modulo;
 
   protected AbstractChordNode(int degree, int id) throws RemoteException {
     this.degree = degree;
-    this.base = Util.powerOf2(degree);
+    int modulus = Util.powerOf2(degree);
+    this.modulus = modulus;
     this.id = id;
     this.fingerTable = new FingerTable<>(degree, id);
-    this.modulo = new Modulo(Util.powerOf2(degree));
+    this.modulo = new Modulo(modulus);
   }
 
   protected AbstractChordNode(int degree, int id, boolean initial) throws RemoteException {
     this.degree = degree;
-    this.base = Util.powerOf2(degree);
+    int modulus = Util.powerOf2(degree);
+    this.modulus = modulus;
     this.id = id;
     this.fingerTable = new FingerTable<>(degree, id, new Object[degree + 1]);
     for (int i = 0; i <= degree; i++) {
       fingerTable.set(i, self());
     }
-    this.modulo = new Modulo(Util.powerOf2(degree));
+    this.modulo = new Modulo(modulus);
   }
 
   /**

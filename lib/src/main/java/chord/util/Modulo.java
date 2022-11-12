@@ -1,78 +1,79 @@
 package chord.util;
 
 /**
- * utility class for operations modulo a certain base.
+ * Utility class for operations modulo a certain modulus.
  */
 public class Modulo {
-  private int base;
 
-  public Modulo(int base) {
-    this.base = base;
+  private int modulus;
+
+  public Modulo(int modulus) {
+    this.modulus = modulus;
   }
 
-  // a <= n < b mod base
+  // a <= n < b mod modulus
   public boolean inLeftHalfClosed(int n, int a, int b) {
     if (a == b)
       return false;
     else if (a < b) {
       return n >= a && n < b;
     } else {
-      return (n >= a && n < base) || (n >= 0 && n < b);
+      return (n >= a && n < modulus) || (n >= 0 && n < b);
     }
   }
 
-  // a < n <= b mod base
+  // a < n <= b mod modulus
   public boolean inRightHalfClosed(int n, int a, int b) {
     if (a == b)
       return false;
     else if (a < b) {
       return n > a && n <= b;
     } else {
-      return (n > a && n < base) || (n >= 0 && n <= b);
+      return (n > a && n < modulus) || (n >= 0 && n <= b);
     }
   }
 
-  // a < n < b mod base
+  // a < n < b mod modulus
   public boolean inOpen(int n, int a, int b) {
     if (a == b)
       return false;
     else if (a < b) {
       return n > a && n < b;
     } else {
-      return (n > a && n < base) || (n >= 0 && n < b);
+      return (n > a && n < modulus) || (n >= 0 && n < b);
     }
   }
 
-  // a <= n <= b mod base
+  // a <= n <= b mod modulus
   public boolean inClosed(int n, int a, int b) {
     if (a == b)
       return n == a;
     else if (a < b) {
       return n >= a && n <= b;
     } else {
-      return (n >= a && n < base) || (n >= 0 && n <= b);
+      return (n >= a && n < modulus) || (n >= 0 && n <= b);
     }
   }
 
-  // n mod base
+  // n mod modulus
   public int mod(int n) {
     if (n >= 0) {
-      return n % base;
+      return n % modulus;
     } else {
-      return mod(base + n);
+      return mod(modulus + n);
     }
   }
 
-  // hashcode mod base
+  // hashcode mod modulus
   public int hashCode(Object o) {
     int hashCodeAbs = Math.abs(o.hashCode());
-    return hashCodeAbs >= base ? hashCodeAbs % base : hashCodeAbs;
+    return hashCodeAbs >= modulus ? hashCodeAbs % modulus : hashCodeAbs;
   }
 
-  // hashcode mod base
-  public static int hashCode(Object o, int base) {
+  // hashcode mod modulus
+  public static int hashCode(Object o, int modulus) {
     int hashCodeAbs = Math.abs(o.hashCode());
-    return hashCodeAbs >= base ? hashCodeAbs % base : hashCodeAbs;
+    return hashCodeAbs >= modulus ? hashCodeAbs % modulus : hashCodeAbs;
   }
 
 }
