@@ -1,5 +1,8 @@
 package chord.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Utility class for operations modulo a certain modulus.
  */
@@ -53,6 +56,23 @@ public class Modulo {
     } else {
       return (n >= a && n < modulus) || (n >= 0 && n <= b);
     }
+  }
+
+  public Iterable<Integer> intervalIterable(int a, int b) {
+    List<Integer> ints = new ArrayList<>();
+    if (a <= b) {
+      for (int i = a; i <= b; i++) {
+        ints.add(i);
+      }
+    } else {
+      for (int i = a; i < modulus; i++) {
+        ints.add(i);
+      }
+      for (int i = 0; i <= b; i++) {
+        ints.add(i);
+      }
+    }
+    return ints;
   }
 
   // n mod modulus

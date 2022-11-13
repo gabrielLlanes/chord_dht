@@ -3,8 +3,12 @@ package chord.node.consistentfinger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.Map.Entry;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +43,50 @@ public class ConsistentFingerTest {
     for (RemoteChordNode<?, ?, ?> chordNode : chordNodes) {
       System.out.println(chordNode);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void transferKeys() throws IOException {
+    ConsistentFingerRemoteChordNode<String, String> c1 = new ConsistentFingerChordNodeImpl<>(5, 1, true);
+    ConsistentFingerChordNodeImpl<String, String> c28 = new ConsistentFingerChordNodeImpl<>(5, 28);
+    Map<String, String> added = new HashMap<>();
+    c28.join(c1);
+    Random rg = new Random();
+    for (int i = 0; i < 1000; i++) {
+      String key = RandomString.getRandomASCIIString(25 + rg.nextInt(26));
+      String val = RandomString.getRandomASCIIString(25 + rg.nextInt(26));
+      c1.put(key, val);
+      added.put(key, val);
+    }
+    ConsistentFingerChordNodeImpl<String, String> c14 = new ConsistentFingerChordNodeImpl<>(5, 14);
+    c14.join(c28);
+    for (int i = 0; i < 1000; i++) {
+      String key = RandomString.getRandomASCIIString(25 + rg.nextInt(26));
+      String val = RandomString.getRandomASCIIString(25 + rg.nextInt(26));
+      c14.put(key, val);
+      added.put(key, val);
+    }
+    ConsistentFingerChordNodeImpl<String, String> c17 = new ConsistentFingerChordNodeImpl<>(5, 17);
+    c17.join(c14);
+    for (int i = 0; i < 1000; i++) {
+      String key = RandomString.getRandomASCIIString(25 + rg.nextInt(26));
+      String val = RandomString.getRandomASCIIString(25 + rg.nextInt(26));
+      c17.put(key, val);
+      added.put(key, val);
+    }
+    ConsistentFingerChordNodeImpl<String, String> c26 = new ConsistentFingerChordNodeImpl<>(5, 26);
+    c26.join(c28);
+    ConsistentFingerChordNodeImpl<String, String> c7 = new ConsistentFingerChordNodeImpl<>(5, 7);
+    c7.join(c26);
+
+    Object[] nodes = new Object[] { c1, c7, c14, c17, c26, c28 };
+    for (Entry<String, String> entry : added.entrySet()) {
+      assertEquals(entry.getValue(),
+          ((RemoteChordNode<String, String, ConsistentFingerRemoteChordNode<String, String>>) nodes[rg
+              .nextInt(nodes.length)]).lookup(entry.getKey()));
+    }
+
   }
 
   @Test

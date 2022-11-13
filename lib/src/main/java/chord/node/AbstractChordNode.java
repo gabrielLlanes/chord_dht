@@ -2,13 +2,16 @@ package chord.node;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import chord.fingertable.FingerTable;
+import chord.fingertable.FingerTableImpl;
 import chord.util.Modulo;
 import chord.util.Util;
 
@@ -48,7 +51,7 @@ public abstract class AbstractChordNode<K extends Serializable, V extends Serial
     int modulus = Util.powerOf2(degree);
     this.modulus = modulus;
     this.id = id;
-    this.fingerTable = new FingerTable<>(degree, id);
+    this.fingerTable = new FingerTableImpl<>(degree, id);
     this.modulo = new Modulo(modulus);
   }
 
@@ -57,7 +60,7 @@ public abstract class AbstractChordNode<K extends Serializable, V extends Serial
     int modulus = Util.powerOf2(degree);
     this.modulus = modulus;
     this.id = id;
-    this.fingerTable = new FingerTable<>(degree, id, new Object[degree + 1]);
+    this.fingerTable = new FingerTableImpl<>(degree, id, new Object[degree + 1]);
     for (int i = 0; i <= degree; i++) {
       fingerTable.set(i, self());
     }
@@ -210,6 +213,20 @@ public abstract class AbstractChordNode<K extends Serializable, V extends Serial
       }
     }
     return null;
+  }
+
+  @Override
+  public Map<Integer, Object> transferControl(int lower, int upper) {
+    Map<Integer, Object> transferred = new HashMap<>();
+    Iterable<Integer> transferredInts = modulo.intervalIterable(lower, upper);
+    for (int i : transferredInts) {
+      LinkedList<Entry<K, V>> l = managed.get(i);
+      if (l != null && l.size() > 0) {
+        transferred.put(i, l);
+        managed.remove(i);
+      }
+    }
+    return transferred;
   }
 
   @Override

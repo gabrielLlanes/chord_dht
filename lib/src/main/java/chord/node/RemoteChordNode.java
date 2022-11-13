@@ -3,10 +3,15 @@ package chord.node;
 import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Map;
 
 /**
  * Node in a chord network. Remote interface to be exposed.
  * 
+ * @param <K> the type of key of the key-value pairs that will be stored in the
+ *            chord
+ * @param <V> the type of value of the key-value pairs that will be stored in
+ *            the chord
  * @param <T> the extending interface
  * @see <a href="https://dl.acm.org/doi/pdf/10.1145/383059.383071">Chord: A
  *      Scalable Peer-to-peer Lookup Service for Internet Applications</a>
@@ -99,4 +104,12 @@ public interface RemoteChordNode<K extends Serializable, V extends Serializable,
    * remove operation that should only be called on the successor of the key.
    */
   public V localRemove(K key) throws RemoteException;
+
+  /**
+   * 
+   * @param lower the lower bound of the interval of keys to be transferred
+   * @param upper the upper bound of the interval of keys to be transferred
+   * @return a map containing the buckets that were transferred
+   */
+  public Map<Integer, Object> transferControl(int lower, int upper);
 }

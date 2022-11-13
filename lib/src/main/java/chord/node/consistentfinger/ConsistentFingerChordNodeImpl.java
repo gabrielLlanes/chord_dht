@@ -2,6 +2,9 @@ package chord.node.consistentfinger;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import chord.node.AbstractChordNode;
 import chord.util.Util;
@@ -18,6 +21,7 @@ public class ConsistentFingerChordNodeImpl<K extends Serializable, V extends Ser
     super(degree, id, initial);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void initFingerTable(ConsistentFingerRemoteChordNode<K, V> chordNode) throws RemoteException {
     ConsistentFingerRemoteChordNode<K, V> successor = chordNode.findSuccessor(getId());
@@ -27,6 +31,12 @@ public class ConsistentFingerChordNodeImpl<K extends Serializable, V extends Ser
     /* this new node can do a trivial update for its successor and predecessor. */
     predecessor.setImmediateSuccessor(this);
     successor.setImmediatePredecessor(this);
+    /* transfer control of keys in range (predecessor.id, this.id] */
+    Map<Integer, Object> transferred = successor.transferControl(predecessor.getId() + 1, id);
+    for (Entry<Integer, Object> e : transferred.entrySet()) {
+      LinkedList<Entry<K, V>> l = (LinkedList<Entry<K, V>>) e.getValue();
+      managed.put(e.getKey(), l);
+    }
     /*
      * setting the finger table entries of this node using the previous entry,
      * if applicable. if not applicable, ask the arbitrary node for the successor of
